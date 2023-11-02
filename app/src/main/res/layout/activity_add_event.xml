@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.addevent.AddEventActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:elevation="100dp"
+            android:background="#80000000"
+            android:id="@+id/progressBar"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                android:elevation="100dp"
+                android:indeterminate="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rrl_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_rec_01">
+            <include
+                android:id="@+id/logged_in_top_nav"
+                layout="@layout/top_nav_add_event"
+                android:layout_alignParentTop="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <ScrollView
+            android:id="@+id/sv_mid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rrl_top"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:id="@+id/ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/shape_rec_01">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You add here the event detals"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_location_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:visibility="gone"/>
+
+                <EditText
+                    android:id="@+id/etname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_rec_02"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:elevation="5dp"
+                    android:hint="Event name"
+                    android:inputType="text"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    android:layout_marginTop="10dp"/>
+
+                <EditText
+                    android:id="@+id/etdesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_rec_02"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="10dp"
+                    android:elevation="5dp"
+                    android:hint="Description"
+                    android:inputType="textMultiLine"
+                    android:gravity="start"
+                    android:maxHeight="400dp"
+                    android:padding="10dp"
+                    android:textSize="16sp"/>
+
+                <EditText
+                    android:id="@+id/etaddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_rec_02"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="10dp"
+                    android:elevation="5dp"
+                    android:hint="Address"
+                    android:inputType="none"
+                    android:gravity="start"
+                    android:maxHeight="400dp"
+                    android:padding="10dp"
+                    android:textSize="16sp"/>
+
+                <Spinner
+                    android:id="@+id/spinner_history"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/shape_rec_02"
+                    android:elevation="20dp"
+                    android:layout_marginTop="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You add here photo"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp"/>
+
+                <TextView
+                    android:id="@+id/txt_add_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_rec_02"
+                    android:elevation="20dp"
+                    android:padding="10dp"
+                    android:text="+ Add photo"
+                    android:textColor="@color/coolGrayColor"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="20dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/add_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="15dp"
+                    />
+
+                <Button
+                    android:id="@+id/btn_save_event"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:elevation="20dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                    android:layout_centerHorizontal="true"
+                    android:text="Save"
+                    android:textColor="@color/Red"
+                    android:textStyle="bold"
+                    android:backgroundTint="@color/white"
+                    app:iconSize="24dp"
+                    android:layout_marginBottom="20dp"
+                    />
+            </LinearLayout>
+        </ScrollView>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

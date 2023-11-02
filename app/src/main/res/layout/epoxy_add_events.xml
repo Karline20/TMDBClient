@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="onClickAddEvent"
+            type="android.view.View.OnClickListener" />
+
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:elevation="20dp"
+        android:layout_margin="5dp"
+        android:id="@+id/btn_add_event"
+        android:onClick="@{onClickAddEvent}">
+
+        <RelativeLayout
+            android:layout_width="100dp"
+            android:layout_height="75dp"
+            android:layout_gravity="right"
+            android:background="@drawable/shape_rec_05">
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/baseline_event_note_24"/>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/add_event"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="@{title}"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textColor="@color/owtoRed"
+            android:layout_gravity="center"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/shape_rec_04">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="Create"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>
+

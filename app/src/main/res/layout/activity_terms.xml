@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.about.terms.TermsActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="100dp"
+        android:background="#80000000"
+        android:id="@+id/progressBar"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerInParent="true"
+            android:elevation="100dp"
+            android:indeterminate="true"/>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/white">
+
+            <include
+                android:id="@+id/logged_in_top_nav"
+                layout="@layout/top_nav_add_event"
+                android:layout_alignParentTop="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="20dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+                <TextView
+                    android:id="@+id/about_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Terms and Conditions"
+                    android:textColor="@color/Red"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp"/>
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_edit_note_24"
+                android:layout_gravity="end"
+                android:layout_marginEnd="20dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/tt_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Title 1"
+                    android:textColor="@color/Red"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp"/>
+
+                <TextView
+                    android:id="@+id/desc_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_below="@id/tt_1"
+                    android:text="Example Description of Cavite asdfdsafdsafasdfdsafdsafadsfdasfadsfasdfadsfadsfasdfasdfasdfasdadfsafsadfa"
+                    android:textColor="@color/coolGrayColor"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/tt_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Title 2"
+                    android:textColor="@color/Red"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp"/>
+
+                <TextView
+                    android:id="@+id/desc_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_below="@id/tt_2"
+                    android:text="Example Description of Cavite asdfdsafdsafasdfdsafdsafadsfdasfadsfasdfadsfadsfasdfasdfasdfasdadfsafsadfa"
+                    android:textColor="@color/coolGrayColor"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
