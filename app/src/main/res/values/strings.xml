@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Admin</string>
+    <string name="my_map_api_key">AIzaSyDb7D4CviDucdZ_cZokOgv0v50P1aBklgI</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="about">About Us</string>
+    <string name="user">Active Users</string>
+    <string name="dash">Dashboard</string>
+    <string name="event_place">Events</string>
+</resources>

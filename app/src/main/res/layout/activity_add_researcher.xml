@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".presentation.about.researcher.AddResearcherActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="20dp">
+
+        <include
+            android:id="@+id/logged_in_top_nav"
+            layout="@layout/top_nav_add_event"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="100dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:elevation="100dp"
+            android:background="#80000000"
+            android:id="@+id/progressBar"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                android:elevation="100dp"
+                android:indeterminate="true"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:elevation="20dp"
+            android:layout_below="@+id/logged_in_top_nav"
+            android:background="@drawable/shape_rec_01">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add here a Researchers"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"/>
+
+            <RelativeLayout
+                android:id="@+id/img_click"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/img"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:civ_border_color="@color/Red"
+                    app:civ_border_overlay="true"
+                    app:civ_border_width="2dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/person_red"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/baseline_add_circle_outline_24"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+
+
+            <EditText
+                android:id="@+id/etname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_rec_02"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:elevation="5dp"
+                android:hint="Name"
+                android:inputType="textPersonName"
+                android:padding="10dp"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/etposition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_rec_02"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:elevation="5dp"
+                android:hint="Position"
+                android:inputType="textMultiLine"
+                android:gravity="start"
+                android:maxHeight="400dp"
+                android:padding="10dp"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:id="@+id/etaddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_rec_02"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:elevation="5dp"
+                android:hint="Address"
+                android:inputType="text"
+                android:gravity="start"
+                android:maxHeight="400dp"
+                android:padding="10dp"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:id="@+id/etcontact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_rec_02"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:elevation="5dp"
+                android:hint="Contact"
+                android:inputType="number"
+                android:gravity="start"
+                android:maxHeight="400dp"
+                android:padding="10dp"
+                android:textSize="16sp"/>
+
+            <Button
+                android:id="@+id/btn_save_event"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:elevation="20dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_centerHorizontal="true"
+                android:text="Save"
+                android:textColor="@color/Red"
+                android:textStyle="bold"
+                android:backgroundTint="@color/white"
+                app:iconSize="24dp"
+                android:layout_marginBottom="20dp"
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

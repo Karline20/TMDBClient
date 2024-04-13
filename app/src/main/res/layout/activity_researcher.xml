@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.about.researcher.ResearcherActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="100dp"
+        android:background="#80000000"
+        android:id="@+id/progressBar"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerInParent="true"
+            android:elevation="100dp"
+            android:indeterminate="true"/>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/rrl_bottom"
+            android:elevation="20dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/add_researcher"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="Add Researcher"
+                android:textColor="@color/Red"
+                android:textStyle="bold"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="15dp"
+                android:backgroundTint="@color/white"
+                app:iconSize="24dp" />
+
+            <include
+                android:id="@+id/logged_in_top_nav"
+                layout="@layout/top_nav_add_event"
+                android:layout_alignParentTop="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="20dp"/>
+
+            <TextView
+                android:id="@+id/no_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="No data to fetch!"
+                android:textColor="@color/Red"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:textAlignment="center"
+                android:layout_below="@+id/logged_in_top_nav"
+                android:elevation="50dp"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_researcher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/logged_in_top_nav"
+                tools:listitem="@layout/epoxy_researcher"/>
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>
