@@ -58,11 +58,11 @@ class EventAdapter(
         holder.txt_address.text = location
 
         val posAndId = "$id,$position"
-        incrementPos(position, id, holder, posAndId)
-
-        if (isCodeExecuted){
-            initImage(id, holder, position, posAndId)
-        }
+//        incrementPos(position, id, holder, posAndId)
+        initImage(id, holder, position, posAndId)
+//        if (isCodeExecuted){
+//            initImage(id, holder, position, posAndId)
+//        }
 
         holder.label_read.setOnClickListener {
             val intent = Intent(context, ViewEventActivity::class.java)
@@ -97,12 +97,14 @@ class EventAdapter(
         val idAndPos = "$id,$position"
         if (idAndPos==(posAndId)){
             lateinit var imageAdapter: ImageAdapter
-            var imageList: ArrayList<Image> = arrayListOf()
+            val imageList: ArrayList<Image> = arrayListOf()
+            imageList.clear()
             databaseReference = FirebaseDatabase.getInstance().getReference("Images")
             databaseReference.child(id)
                 .addListenerForSingleValueEvent(object : ValueEventListener{
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
+                            Log.d("eventID", "$snapshot $id")
                             imageList.clear()
                             for (snapshot in snapshot.children) {
                                 val image = snapshot.getValue(Image::class.java)

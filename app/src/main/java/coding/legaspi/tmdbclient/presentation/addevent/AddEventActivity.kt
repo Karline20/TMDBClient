@@ -8,10 +8,12 @@ import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.location.Address
-import android.location.Geocoder
+import android.graphics.Bitmap
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
@@ -19,43 +21,41 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.FrameLayout
-import android.widget.SearchView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import coding.legaspi.tmdbclient.data.model.adaptermodel.Image
 import coding.legaspi.tmdbclient.data.model.adaptermodel.ImageItem
 import coding.legaspi.tmdbclient.data.model.events.AllModel
 import coding.legaspi.tmdbclient.databinding.ActivityAddEventBinding
 import coding.legaspi.tmdbclient.presentation.addevent.adapter.ImageAdapterSelection
-import coding.legaspi.tmdbclient.presentation.addevent.adapter.SearchListAdapter
 import coding.legaspi.tmdbclient.presentation.addevent.map.MapsFragment
 import coding.legaspi.tmdbclient.presentation.di.Injector
 import coding.legaspi.tmdbclient.presentation.home.HomeActivity
 import coding.legaspi.tmdbclient.presentation.viewmodel.EventViewModel
 import coding.legaspi.tmdbclient.presentation.viewmodel.EventViewModelFactory
 import coding.legaspi.tmdbclient.utils.FirebaseManager
-import coding.legaspi.tmdbclient.utils.ImageAdapter
 import coding.legaspi.tmdbclient.utils.VibrateView
-import com.google.android.gms.maps.model.LatLng
+import com.bumptech.glide.Glide
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.io.File
-import java.io.IOException
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.concurrent.Executors
 import javax.inject.Inject
 
 class AddEventActivity : AppCompatActivity() {
@@ -113,10 +113,9 @@ class AddEventActivity : AppCompatActivity() {
         (application as Injector).createEventsSubComponent()
             .injectAddEventActivity(this)
         eventViewModel= ViewModelProvider(this, factory).get(EventViewModel::class.java)
+        imageItem = arrayListOf()
         binding.spinnerHistory.visibility = GONE
         val intent = intent
-        imageItem = arrayListOf()
-        imageAdapterSelection = ImageAdapterSelection(this, imageItem)
         id = intent.getStringExtra("id").toString()
         name = intent.getStringExtra("name").toString()
         idPatch = intent.getStringExtra("idPatch").toString()
@@ -143,6 +142,7 @@ class AddEventActivity : AppCompatActivity() {
             if (idPatch=="null"){
                 setName()
             }else{
+                Log.d("Edit some", "Loading $idPatch")
                 patch()
             }
         }
@@ -150,6 +150,7 @@ class AddEventActivity : AppCompatActivity() {
             //setName()
         }else{
             //patch()
+            Log.d("Edit some", "Loading $idPatch")
             setData()
         }
         binding.loggedInTopNav.back.setOnClickListener {
@@ -186,6 +187,7 @@ class AddEventActivity : AppCompatActivity() {
         })
     }
 
+    private var isImageNotEmpty: Boolean = false
     @SuppressLint("SuspiciousIndentation")
     private fun patch() {
         val currentTimeMillis = System.currentTimeMillis()
@@ -196,6 +198,7 @@ class AddEventActivity : AppCompatActivity() {
                 try {
                     var notEmpty: String = selectedOption!!.ifEmpty { "" }
                     isLoading = true
+                    Log.d("Edit some", "Loading $isLoading")
                     setLoading()
                     val lat: String
                     val lon: String
@@ -209,36 +212,80 @@ class AddEventActivity : AppCompatActivity() {
                         lon = longitude!!
                         eAddress = eventAddress!!
                     }
-
-                    val responseLiveData = eventViewModel.patchEventsById(id, AllModel(notEmpty, formattedDate, description, eventName, "",
-                        lat, eAddress, lon, currentTimeMillis.toString(), eventName))
+                    Log.d("Edit some", "id $id")
+                    Log.d("Edit some", "idPatch $idPatch")
+                    val responseLiveData = eventViewModel.patchEventsById(idPatch, AllModel(notEmpty, formattedDate, description, eventName, "",
+                        lat, eAddress, lon, currentTimeMillis.toString(), eventcategory))
                     responseLiveData.observe(this, Observer {
                         try {
+                            // Initialize a counter variable
+                            var processedImageCount = 0
+                            Log.d("SaveImage", "processedImageCount $processedImageCount")
                             for (imageuri in imageItem) {
                                 val image = Uri.parse(imageuri.uri.toString())
-                                FirebaseManager().saveUpdateToFirebase(this, idPatch, image){
-                                    if (it){
+                                if (image != null){
+                                    Log.d("SaveImage", "SaveImage $image")
+                                    if (isImageNotEmpty) {
+                                        if (image.scheme == "https" && image.host == "firebasestorage.googleapis.com"){
+                                            Log.d("SaveImage", "if image.scheme == https $image")
+                                            processedImageCount++
+                                            Log.d("SaveImage", "processedImageCount $processedImageCount")
+                                        }else{
+                                            FirebaseManager().saveUpdateToFirebase(this, idPatch, image){
+                                                if (it){
+                                                    processedImageCount++
+                                                    Log.d("SaveImage", "processedImageCount $processedImageCount")
+                                                    Log.d("SaveImage", "processedImageCountsize ${imageItem.size}")
+                                                    if (processedImageCount == imageItem.size){
+                                                        Log.d("SaveImage", "processedImageCount $processedImageCount")
+                                                        isLoading = false
+                                                        Log.d("SaveImage", "image.scheme == file $image")
+                                                        Log.d("Edit some", "Loading $isLoading")
+                                                        setLoading()
+                                                        val intent = Intent(this, HomeActivity::class.java)
+                                                        startActivity(intent)
+                                                        finish()
+                                                    }
+                                                }else{
+                                                    isLoading = false
+                                                    Log.d("Edit some", "Loading $isLoading")
+                                                    setLoading()
+                                                    Toast.makeText(this, "Check you internet connection! 1", Toast.LENGTH_SHORT).show()
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        Log.d("SaveImage", "image.scheme == https $image")
                                         isLoading = false
+                                        Log.d("Edit some", "Loading $isLoading")
                                         setLoading()
                                         val intent = Intent(this, HomeActivity::class.java)
                                         startActivity(intent)
                                         finish()
-                                    }else{
-                                        isLoading = false
-                                        setLoading()
-                                        Toast.makeText(this, "Check you internet connection! 1", Toast.LENGTH_SHORT).show()
+                                        if (image.scheme == "https" && image.host == "firebasestorage.googleapis.com"){
+                                            Log.d("SaveImage", "if image.scheme == https $image")
+                                        }
                                     }
+                                }else{
+                                    isLoading = false
+                                    Log.d("Edit some", "Loading $isLoading")
+                                    setLoading()
+                                    val intent = Intent(this, HomeActivity::class.java)
+                                    startActivity(intent)
+                                    finish()
                                 }
                             }
                         }catch (e: Exception){
                             Toast.makeText(this, "Check you internet connection! 2", Toast.LENGTH_SHORT).show()
                             isLoading = false
+                            Log.d("Edit some", "Loading $isLoading")
                             setLoading()
                             Toast.makeText(this, "Can't save Image", Toast.LENGTH_SHORT).show()
                         }
                     })
                 }catch (e:Exception){
                     isLoading = false
+                    Log.d("Edit some", "Loading $isLoading")
                     setLoading()
                     Log.e("ADD EVENT", "$e")
                     Toast.makeText(this, "Check you internet connection! 3", Toast.LENGTH_SHORT).show()
@@ -257,36 +304,36 @@ class AddEventActivity : AppCompatActivity() {
     private fun setListImage() {
         imageList = arrayListOf()
         databaseReference = FirebaseDatabase.getInstance().getReference("Images")
-        databaseReference.child(id)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        for (snapshot in snapshot.children) {
-                            val image = snapshot.getValue(Image::class.java)
-                            if (image != null) {
-                                imageList.add(image)
-                                if (imageList.isNotEmpty()) {
-                                    val imageuri = imageList[0].imageUri
-                                    val uri = Uri.parse(imageuri.toString())
-                                    setImageItem(uri)
-                                    Log.d("URI", "URI: Karlen "+imageuri)
-                                }
-                                //
-                            }else{
-                                Log.d("URI", "URI: Karlen ")
+        databaseReference.child(idPatch).get()
+            .addOnSuccessListener {snapshot ->
+                if (snapshot.exists()) {
+                    var countImage = 0
+                    for (snapshot in snapshot.children) {
+                        val image = snapshot.getValue(Image::class.java)
+                        if (image != null) {
+                            imageList.add(image)
+                            countImage++
+                            Log.d("URI", "countImage: $countImage")
+                            Log.d("URI", "children: ${snapshot.children}")
+                            if (imageList.isNotEmpty()) {
+                                val imageuri = image.imageUri
+                                Log.d("URI", "URI: Karlen "+imageuri)
+                                val id = image.id
+                                val uri = Uri.parse(imageuri.toString())
+                                setImageItem(uri, id!!)
                             }
+                            //
+                        }else{
+                            Log.d("URI", "URI: Karlen ")
                         }
                     }
-                    else {
-                        Log.d("error", "error")
-                    }
                 }
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("EventAdapter", "rv Image $error")
+                else {
+                    Log.d("error", "error")
                 }
-            })
-    }
+            }
 
+    }
     private fun setLoading() {
         when (isLoading){
             true -> {
@@ -323,6 +370,7 @@ class AddEventActivity : AppCompatActivity() {
                                 val eventID = it.body()?.id
                                 Log.d("AddEvent", "$eventID")
                                 if (eventID!=null){
+                                    var processedImageCount = 0
                                     for (imageuri in imageItem) {
                                         val image = Uri.parse(imageuri.uri.toString())
                                         FirebaseManager().saveEventImageToFirebase(
@@ -331,11 +379,14 @@ class AddEventActivity : AppCompatActivity() {
                                             image
                                         ) {
                                             if (it) {
-                                                isLoading = false
-                                                setLoading()
-                                                val intent = Intent(this, HomeActivity::class.java)
-                                                startActivity(intent)
-                                                finish()
+                                                processedImageCount++
+                                                if (processedImageCount == imageItem.size){
+                                                    isLoading = false
+                                                    setLoading()
+                                                    val intent = Intent(this, HomeActivity::class.java)
+                                                    startActivity(intent)
+                                                    finish()
+                                                }
                                             } else {
                                                 isLoading = false
                                                 setLoading()
@@ -416,9 +467,9 @@ class AddEventActivity : AppCompatActivity() {
     fun getListBasedOnInput(input: String): List<String> {
         return when (input) {
             "History" -> listOf("Historical Places", "Events", "Heroes")
-            "Foods" -> listOf("Famous Delicacies", "Restaurants", "Cafes", "Convenience Stores", "Fast Food", "Homemade Foods")
+            "Foods" -> listOf("Famous Delicacies", "Restaurants", "Cafes", "Fast Food", "Homemade Foods")
             "Hotel & Resorts" -> listOf("Resort", "Hotel")
-            "Emergency Care & Contacts" -> listOf("Hospital", "Pharmacy", "Police Station", "Fire Station")
+            "Emergency Care & Contacts" -> listOf("Hospital", "Pharmacy", "Police Station", "Fire Station", "Health Center")
             "Schools" -> listOf("Elementary", "Highschool", "College", "Vocational", "Other")
 //            "Church" -> listOf("Church")
             else -> emptyList()
@@ -530,17 +581,22 @@ class AddEventActivity : AppCompatActivity() {
         val path = getPathFromURI(imageUri)
         if (path != null) {
             val file = File(path)
+            isImageNotEmpty = true
+            Log.d("Edit some", "$isImageNotEmpty")
             val newSelectedImageUri = Uri.fromFile(file)
-            setImageItem(newSelectedImageUri)
+            setImageItem(newSelectedImageUri, "")
+        }else {
+            Toast.makeText(this, "Path is null!", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun setImageItem(uriForCamera: Uri) {
-        val imageItems = ImageItem(uriForCamera)
+    private fun setImageItem(uriForCamera: Uri, id: String) {
+        val imageItems = ImageItem(idPatch, id, uriForCamera)
         imageItem.add(imageItems)
+        imageAdapterSelection = ImageAdapterSelection(this, imageItem)
         binding.addPhoto.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.addPhoto.adapter = imageAdapterSelection
-        imageAdapterSelection.notifyDataSetChanged()
+        //imageAdapterSelection.notifyDataSetChanged()
     }
 
     private val pickImageActivityResultLauncher =

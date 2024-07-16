@@ -1,14 +1,18 @@
 package coding.legaspi.tmdbclient.presentation
 
 import R2
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import coding.legaspi.tmdbclient.BuildConfig
 import coding.legaspi.tmdbclient.databinding.ActivitySplashBinding
 import coding.legaspi.tmdbclient.presentation.home.HomeActivity
@@ -23,7 +27,7 @@ class SplashActivity : AppCompatActivity() {
     private val SPLASH_DELAY: Long = 1000
     private lateinit var sharePreferences: SharedPreferences
     private lateinit var binding: ActivitySplashBinding
-
+    private val REQUEST_CODE_READ_EXTERNAL_STORAGE = 1000
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
@@ -31,10 +35,36 @@ class SplashActivity : AppCompatActivity() {
         setContentView(view)
         sharePreferences = this.getSharedPreferences(BuildConfig.APPLICATION_ID, Context.MODE_PRIVATE)
 
-        Handler().postDelayed({
-            checkLogin()
-            finish()
-        }, SPLASH_DELAY)
+        // Check if the permission is already granted
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // If not, request the permission
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_READ_EXTERNAL_STORAGE)
+        } else {
+            Handler().postDelayed({
+                checkLogin()
+                finish()
+            }, SPLASH_DELAY)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_CODE_READ_EXTERNAL_STORAGE -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Handler().postDelayed({
+                        checkLogin()
+                        finish()
+                    }, SPLASH_DELAY)
+                } else {
+                    Handler().postDelayed({
+                        checkLogin()
+                        finish()
+                    }, SPLASH_DELAY)
+                }
+                return
+            }
+        }
     }
 
     private fun checkLogin() {

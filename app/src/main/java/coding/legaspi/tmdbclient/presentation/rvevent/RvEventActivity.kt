@@ -48,7 +48,6 @@ class RvEventActivity : AppCompatActivity() {
         binding.loggedInTopNav.labelTitle.text = name
         setBottomButton()
         setMenu()
-        initRv()
     }
 
     private fun setCategory(name: String) {
