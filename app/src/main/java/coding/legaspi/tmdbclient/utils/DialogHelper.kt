@@ -46,4 +46,6 @@ interface DialogHelper {
               content: String,
               confirm: String,
               callback: (Boolean) -> Unit)
+
+    fun showUnauthorizedError(error: Error, positiveButtonFunction: () -> Unit)
 }

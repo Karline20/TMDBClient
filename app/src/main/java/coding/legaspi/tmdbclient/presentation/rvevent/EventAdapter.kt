@@ -130,6 +130,12 @@ class EventAdapter(
         }
     }
 
+    fun setSuggestions(newSuggestions: List<AllModelOutput>) {
+        eventList.clear()
+        eventList.addAll(newSuggestions)
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount(): Int {
         return eventList.size
     }

@@ -9,6 +9,18 @@ import com.marsad.stylishdialogs.StylishAlertDialog
 
 class DialogHelperImpl(private val context: Context) : DialogHelper {
 
+    override fun showUnauthorizedError(error: Error, positiveButtonFunction: () -> Unit) {
+        StylishAlertDialog(context, StylishAlertDialog.ERROR)
+            .setTitleText(error.name)
+            .setContentText(error.message)
+            .setConfirmText("Okay, try again")
+            .setConfirmClickListener {
+                positiveButtonFunction.invoke()
+                it.dismiss()
+            }
+            .show()
+
+    }
     override fun showUnauthorized(error: Error) {
         StylishAlertDialog(context, StylishAlertDialog.ERROR)
             .setTitleText(error.name)

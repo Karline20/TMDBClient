@@ -128,6 +128,7 @@ class HomeActivity : AppCompatActivity() {
                 binding.epoxyRvAdd.isNestedScrollingEnabled = false
                 binding.epoxyRvAdd.withModels {
                     it.forEach {
+                        if (it.name != "Cavite City Hymn")
                         addEvents{
                             id(UUID.randomUUID().toString())
                             title(it.name)

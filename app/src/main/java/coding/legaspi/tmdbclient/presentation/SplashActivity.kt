@@ -17,10 +17,6 @@ import coding.legaspi.tmdbclient.BuildConfig
 import coding.legaspi.tmdbclient.databinding.ActivitySplashBinding
 import coding.legaspi.tmdbclient.presentation.home.HomeActivity
 import coding.legaspi.tmdbclient.presentation.login.LoginActivity
-import coding.legaspi.tmdbclient.utils.FirebaseManager
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
-
 
 class SplashActivity : AppCompatActivity() {
 

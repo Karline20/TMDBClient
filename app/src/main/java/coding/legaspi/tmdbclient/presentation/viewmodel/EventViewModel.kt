@@ -1,5 +1,6 @@
 package coding.legaspi.tmdbclient.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import coding.legaspi.tmdbclient.data.model.auth.EmailVerified
@@ -41,6 +42,21 @@ class EventViewModel(private val getEventsUseCase: GetEventsUseCase, ) : ViewMod
         val getCategory = getEventsUseCase.getCategory(category)
         emit(getCategory)
     }
+
+    fun searchCategory(searchQuery: String, eventCategory: String, category: String) = liveData {
+        try {
+            val searchEvents = getEventsUseCase.searchEventsByCategory(searchQuery, eventCategory, category)
+            emit(Result.Success(searchEvents))
+        }catch (ioException: IOException) {
+            emit(Result.Error(ioException))
+            Log.e("Check Result", "ioException $ioException")
+        } catch (exception: Exception) {
+            emit(Result.Error(exception))
+            Log.e("Check Result", "exception $exception")
+        }
+
+    }
+
 
     fun getUser() = liveData {
         val userList = getEventsUseCase.getUser()

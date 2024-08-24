@@ -65,7 +65,10 @@ class HomeAdapter internal constructor(
             "Emergency Care & Contacts"-> holder.postImageView.setImageResource(R.drawable.emergencyp)
             "Church"-> holder.postImageView.setImageResource(R.drawable.churchlogo)
             "Hospital and Clinic"-> holder.postImageView.setImageResource(R.drawable.hospital)
-            "Cavite City Hymn" -> holder.postImageView.setImageResource(R.drawable.cavite_hymn)
+            "Cavite City Hymn" -> {
+                holder.postImageView.setImageResource(R.drawable.cavite_hymn)
+                holder.txt_number.visibility = View.GONE
+            }
         }
 
         countEvents(name, holder)
