@@ -32,6 +32,7 @@ import coding.legaspi.tmdbclient.Result
 import coding.legaspi.tmdbclient.data.model.error.Error
 import coding.legaspi.tmdbclient.utils.MediaPlayerFactory
 import coding.legaspi.tmdbclient.utils.MediaPlayerHelper
+import com.google.android.material.tabs.TabLayout
 
 class RvEventActivity : AppCompatActivity() {
 
@@ -66,12 +67,14 @@ class RvEventActivity : AppCompatActivity() {
     }
 
     private fun setCategory(name: String) {
+        binding.rrlFirst.visibility = GONE
         binding.llHistory.visibility = GONE
         binding.llContacts.visibility = GONE
         binding.llHotres.visibility = GONE
         binding.llFoods.visibility = GONE
         binding.llSchool.visibility = GONE
         binding.hymnBar.layoutHymn.visibility = GONE
+        Log.i("HYMN", "$name")
         when(name){
             "History" -> {
                 binding.llHistory.visibility = VISIBLE
@@ -94,19 +97,45 @@ class RvEventActivity : AppCompatActivity() {
                 setBindingSchool()
             }
             "Cavite City Hymn" -> {
+                Log.i("HYMN", "Cavite City Hymn")
                 binding.noData.visibility = GONE
-                binding.rrMid.visibility = GONE
                 binding.rrlFirst.visibility = GONE
+                binding.rrMid.visibility = GONE
                 binding.rrlSecond.visibility = GONE
+                binding.svEvents.visibility = GONE
                 binding.hymnBar.layoutHymn.visibility = VISIBLE
                 binding.hymnBar.lyricsCategory.visibility = VISIBLE
                 binding.hymnBar.hymnTitle.text = getString(R.string.hymn_tagalog_title)
                 binding.hymnBar.hymnLyrics.text = getString(R.string.hymn_tagalog_lyrics)
-                binding.hymnBar.lyricsCategory.setOnClickListener {
-                    setLyricsOptions()
-                }
+                var lyrics: String? = null
+                binding.hymnBar.lyricsCategory.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                    override fun onTabSelected(tab: TabLayout.Tab) {
+                        when (tab.position) {
+                            0 -> {
+                                lyrics = "Tagalog Hymn"
+                                binding.hymnBar.hymnTitle.text = getString(R.string.hymn_tagalog_title)
+                                binding.hymnBar.hymnLyrics.text = getString(R.string.hymn_tagalog_lyrics)
+                            }
+                            1 -> {
+                                lyrics = "Chabacano Hymn"
+                                binding.hymnBar.hymnTitle.text = getString(R.string.hymn_chabacano_title)
+                                binding.hymnBar.hymnLyrics.text = getString(R.string.hymn_chabacano_lyrics)
+                            }
+                            else -> {
+
+                            }
+                        }
+                    }
+
+                    override fun onTabUnselected(tab: TabLayout.Tab) {
+                        mediaPlayerHelper.stopMusic()
+                    }
+                    override fun onTabReselected(tab: TabLayout.Tab) {
+                        mediaPlayerHelper.stopMusic()
+                    }
+                })
                 binding.hymnBar.playSound.setOnClickListener {
-                    mediaPlayerHelper.playMusic("Tagalog Hymn"){
+                    mediaPlayerHelper.playMusic(lyrics!!){
                         if (it) mediaPlayerHelper.stopMusic()
                     }
                 }
@@ -114,25 +143,9 @@ class RvEventActivity : AppCompatActivity() {
         }
     }
 
-    private fun setLyricsOptions() {
-        val fonts = arrayOf(
-            "TAGALOG LYRICS", "CHABACANO LYRICS"
-        )
-
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setTitle("Select translation")
-        builder.setItems(fonts, DialogInterface.OnClickListener { dialog, which ->
-            if ("TAGALOG LYRICS" == fonts[which]) {
-                binding.hymnBar.hymnTitle.text = getString(R.string.hymn_tagalog_title)
-                binding.hymnBar.hymnLyrics.text = getString(R.string.hymn_tagalog_lyrics)
-            } else if ("CHABACANO LYRICS" == fonts[which]) {
-                binding.hymnBar.hymnTitle.text = getString(R.string.hymn_chabacano_title)
-                binding.hymnBar.hymnLyrics.text = getString(R.string.hymn_chabacano_lyrics)
-            }
-        })
-        builder.show()
-    }
-
+    val fonts = arrayOf(
+        "TAGALOG LYRICS", "CHABACANO LYRICS"
+    )
 
     private fun setBindingSchool() {
         binding.elementary.setOnClickListener {
@@ -250,6 +263,8 @@ class RvEventActivity : AppCompatActivity() {
                                         binding.epoxyRvAdd.adapter = eventAdapter
                                         binding.progressBar.visibility = GONE
                                         eventAdapter.setSuggestions(result)
+                                        binding.epoxyRvAdd.visibility= VISIBLE
+
                                     }else{
                                         binding.noData.visibility= VISIBLE
                                         binding.epoxyRvAdd.visibility= GONE
@@ -297,7 +312,7 @@ class RvEventActivity : AppCompatActivity() {
                         binding.progressBar.visibility = GONE
                     }
                 }else{
-                    listenToByCatSearch(category)
+                    initRv()
                 }
                 return true
             }
@@ -311,10 +326,10 @@ class RvEventActivity : AppCompatActivity() {
 
     private fun updateByCatSuggestions(newText: String?, category: String) {
         if (newText.isNullOrEmpty()) {
-            setCategory(name)
+            initRv()
             return
         }
-        binding.epoxyRvAdd.visibility = FrameLayout.VISIBLE
+        binding.epoxyRvAdd.visibility = VISIBLE
 
         try {
             val responseLiveData = eventViewModel.searchCategory(newText, name,category)
@@ -337,6 +352,8 @@ class RvEventActivity : AppCompatActivity() {
                                 binding.progressBar.visibility = GONE
                                 binding.noData.visibility = GONE
                                 eventAdapter.setSuggestions(result)
+                                binding.epoxyRvAdd.visibility= VISIBLE
+
                             }
                         }else{
                             binding.progressBar.visibility = GONE
@@ -467,32 +484,56 @@ class RvEventActivity : AppCompatActivity() {
         binding.noData.visibility= GONE
         Log.d("RvEvent", name)
         initRv()
-        binding.rrMid.visibility = GONE
-        when(name){
-            "History", "Foods","Hotel & Resorts","Emergency Care & Contacts", "Schools"   -> {
-                binding.rrMid.visibility = VISIBLE
-                setCategory(name)
-            }
-        }
+        setCategory(name)
     }
 
     private fun initRv() {
         val responseLiveData = eventViewModel.getEventsByCategory(name)
         try {
             responseLiveData.observe(this, Observer {
-                if (it!=null){
-                    allModelOutput.clear()
-                    allModelOutput.addAll(it)
-                    val llm = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-                    binding.epoxyRvAdd.layoutManager = llm
-                    binding.epoxyRvAdd.adapter = eventAdapter
-                    eventAdapter.notifyDataSetChanged()
-                    binding.noData.visibility= GONE
-                    binding.epoxyRvAdd.visibility= VISIBLE
-                }else{
-                    binding.noData.visibility=VISIBLE
-                    binding.epoxyRvAdd.visibility= GONE
-                    Log.d("RvEvent", "Null")
+                when(it){
+                    is Result.Success<*> -> {
+                        val result = it.data as List<AllModelOutput>
+                        if (result!=null){
+                            if (result.isEmpty()){
+                                binding.noData.visibility=VISIBLE
+                                binding.epoxyRvAdd.visibility= GONE
+                                binding.labelWelcome.text = "No list for $name"
+                            }else{
+                                allModelOutput.clear()
+                                allModelOutput.addAll(result)
+                                val llm = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+                                binding.epoxyRvAdd.layoutManager = llm
+                                binding.epoxyRvAdd.adapter = eventAdapter
+                                binding.labelWelcome.text = "Category $name"
+                                binding.epoxyRvAdd.visibility = VISIBLE
+                                eventAdapter.notifyDataSetChanged()
+                            }
+                        }else{
+                            binding.noData.visibility=VISIBLE
+                            binding.epoxyRvAdd.visibility= GONE
+                            Log.d("RvEvent", "Null")
+                        }
+                    }
+                    is Result.Error -> {
+                        val exception = it.exception
+
+                        if (exception is IOException) {
+                            binding.progressBar.visibility = GONE
+                            if (exception.localizedMessage!! == "timeout"){
+
+                            } else{
+
+                            }
+                        } else {
+                            binding.progressBar.visibility = GONE
+                        }
+                    }
+                    Result.Loading -> {
+                        binding.progressBar.visibility = VISIBLE
+                    }
+
+                    else -> {}
                 }
             })
         }catch (e: Exception){

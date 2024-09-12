@@ -64,7 +64,7 @@
                 android:id="@+id/rrl_first"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:layout_below="@+id/logged_in_top_nav"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="2dp"
@@ -89,7 +89,6 @@
 
             <RelativeLayout
                 android:id="@+id/rr_mid"
-                tools:visibility="visible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rrl_first"
@@ -105,7 +104,6 @@
                     android:id="@+id/ll_history"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -189,7 +187,6 @@
                     android:id="@+id/ll_foods"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -326,7 +323,6 @@
                     android:id="@+id/ll_hotres"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -386,7 +382,6 @@
                     android:id="@+id/ll_contacts"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -522,7 +517,6 @@
                     android:id="@+id/ll_school"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -660,13 +654,11 @@
                 android:id="@+id/rrl_second"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:visibility="gone"
                 android:background="@color/white"
                 android:layout_margin="2dp"
                 android:layout_below="@+id/rr_mid"
                 android:layout_marginBottom="60dp"
-                android:elevation="20dp"
-                android:visibility="visible">
+                android:elevation="20dp">
 
                 <SearchView
                     android:id="@+id/sv_events"
@@ -698,6 +690,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/epoxy_events"
+                    android:elevation="20dp"
                     />
 
             </RelativeLayout>
@@ -708,7 +703,7 @@
                 android:layout_height="wrap_content"
                 layout="@layout/layout_cavite_hymn"
                 android:layout_below="@id/logged_in_top_nav"
-                android:visibility="gone"
+                android:visibility="visible"
                 />
 
         </RelativeLayout>

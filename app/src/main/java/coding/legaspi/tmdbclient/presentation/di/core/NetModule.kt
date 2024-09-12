@@ -3,6 +3,8 @@ package coding.legaspi.tmdbclient.presentation.di.core
 import coding.legaspi.tmdbclient.data.api.TMDBService
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -13,9 +15,17 @@ class NetModule(private val baseUrl: String) {
     @Singleton
     @Provides
     fun provideRetrofit():Retrofit{
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(baseUrl)
+            .client(
+                OkHttpClient.Builder()
+                    .addInterceptor(loggingInterceptor)
+                    .build()
+            )
             .build()
     }
 

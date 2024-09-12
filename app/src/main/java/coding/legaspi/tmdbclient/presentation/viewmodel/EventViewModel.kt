@@ -85,8 +85,14 @@ class EventViewModel(private val getEventsUseCase: GetEventsUseCase, ) : ViewMod
     }
 
     fun getEventsByCategory(eventcategory: String) = liveData {
-        val getEventsByCategory = getEventsUseCase.getEventsByCategory(eventcategory)
-        emit(getEventsByCategory)
+        try {
+            val getEventsByCategory = getEventsUseCase.getEventsByCategory(eventcategory)
+            emit(Result.Success(getEventsByCategory))
+        } catch (ioException: IOException) {
+            emit(Result.Error(ioException))
+        } catch (exception: Exception) {
+            emit(Result.Error(exception))
+        }
     }
 
     fun countEventsByCategory(eventcategory: String) = liveData {
