@@ -424,8 +424,9 @@ class AddEventActivity : AppCompatActivity() {
     }
 
     private fun listentToSpinner() {
-        val list: List<String>
+        val list: List<Pair<String, String>>
         Log.d(TAG, "eventCategory: $eventcategory")
+        Log.d(TAG, "category: $categoryPatch")
         if (categoryPatch=="null") {
             list = getListBasedOnInput(name)
             if (list.isEmpty()){
@@ -443,9 +444,21 @@ class AddEventActivity : AppCompatActivity() {
             }
         }
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, list)
+        // Extract the display values (first item of the pair) to show in the spinner
+        val displayList = list.map { it.first }
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, displayList)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerHistory.adapter = adapter
+
+        if (categoryPatch != "null") {
+            // Find the index of the item in the list where the second (actual) value matches categoryPatch
+            val indexOfMatchingItem = list.indexOfFirst { it.second == categoryPatch }
+            if (indexOfMatchingItem != -1) {
+                // Set the spinner selection to the corresponding display value
+                binding.spinnerHistory.setSelection(indexOfMatchingItem)
+            }
+        }
 
         binding.spinnerHistory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(
@@ -454,7 +467,7 @@ class AddEventActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                selectedOption = list[position]
+                selectedOption = list[position].second
                 Log.d("AddEventView", "$selectedOption")
             }
 
@@ -463,15 +476,38 @@ class AddEventActivity : AppCompatActivity() {
             }
         }
     }
-
-    fun getListBasedOnInput(input: String): List<String> {
+    fun getListBasedOnInput(input: String): List<Pair<String, String>> {
         return when (input) {
-            "History" -> listOf("Historical Places", "Events", "Heroes")
-            "Foods" -> listOf("Famous Delicacies", "Restaurants", "Cafes", "Fast Food", "Homemade Foods")
-            "Hotel & Resorts" -> listOf("Resort", "Hotel")
-            "Emergency Care & Contacts" -> listOf("Hospital", "Pharmacy", "Police Station", "Fire Station", "Health Center")
-            "Schools" -> listOf("Elementary", "Highschool", "College", "Vocational", "Other")
-//            "Church" -> listOf("Church")
+            "History" -> listOf(
+                "Historical Places" to "Historical Places",
+                "Events" to "Events",
+                "Notable Person" to "Heroes" // Display "Notable Person" but use "Heroes" as the value
+            )
+            "Foods" -> listOf(
+                "Famous Delicacies" to "Famous Delicacies",
+                "Restaurants" to "Restaurants",
+                "Cafes" to "Cafes",
+                "Fast Food" to "Fast Food",
+                "Homemade Foods" to "Homemade Foods"
+            )
+            "Hotel & Resorts" -> listOf(
+                "Resort" to "Resort",
+                "Hotel" to "Hotel"
+            )
+            "Emergency Care & Contacts" -> listOf(
+                "Hospital" to "Hospital",
+                "Pharmacy" to "Pharmacy",
+                "Police Station" to "Police Station",
+                "Fire Station" to "Fire Station",
+                "Health Center" to "Health Center"
+            )
+            "Schools" -> listOf(
+                "Elementary" to "Elementary",
+                "Highschool" to "Highschool",
+                "College" to "College",
+                "Vocational" to "Vocational",
+                "Other" to "Other"
+            )
             else -> emptyList()
         }
     }

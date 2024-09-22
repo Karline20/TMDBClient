@@ -107,7 +107,7 @@ class RvEventActivity : AppCompatActivity() {
                 binding.hymnBar.lyricsCategory.visibility = VISIBLE
                 binding.hymnBar.hymnTitle.text = getString(R.string.hymn_tagalog_title)
                 binding.hymnBar.hymnLyrics.text = getString(R.string.hymn_tagalog_lyrics)
-                var lyrics: String? = null
+                var lyrics: String? = "Tagalog Hymn"
                 binding.hymnBar.lyricsCategory.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab) {
                         when (tab.position) {
@@ -135,12 +135,28 @@ class RvEventActivity : AppCompatActivity() {
                     }
                 })
                 binding.hymnBar.playSound.setOnClickListener {
+                    Log.i("LYRICS PLAY", "$lyrics")
                     mediaPlayerHelper.playMusic(lyrics!!){
                         if (it) mediaPlayerHelper.stopMusic()
                     }
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mediaPlayerHelper.stopMusic()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mediaPlayerHelper.stopMusic()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayerHelper.stopMusic()
     }
 
     val fonts = arrayOf(
@@ -201,6 +217,10 @@ class RvEventActivity : AppCompatActivity() {
         binding.hospital.setOnClickListener {
             setRvCate("Hospital")
             listenToByCatSearch("Hospital")
+        }
+        binding.healthCenter.setOnClickListener {
+            setRvCate("Health Center")
+            listenToByCatSearch("Health Center")
         }
         binding.pharmacy.setOnClickListener {
             setRvCate("Pharmacy")

@@ -62,7 +62,6 @@ class ViewEventActivity : AppCompatActivity() {
         eventViewModel= ViewModelProvider(this, factory).get(EventViewModel::class.java)
         dialogHelper = DialogHelperFactory.create(this)
         viewEventBinding.progressBar.visibility = GONE
-        viewEventBinding.labelCategory.visibility = GONE
 
         id = intent.getStringExtra("id").toString()
         name = intent.getStringExtra("name").toString()
@@ -157,14 +156,20 @@ class ViewEventActivity : AppCompatActivity() {
     }
 
     private fun setData() {
+        Log.d("ViewEventActivity 2 ", "Category:: "+category)
+
         try {
             viewEventBinding.labelName.text = name
             viewEventBinding.labelDescription.text = description
             viewEventBinding.txtAddress.text = location
             viewEventBinding.labelDate.text = date
             viewEventBinding.labelEventCategory.text = eventcategory
-            if (category!=null){
-                viewEventBinding.labelCategory.text = category
+            if (category!= null){
+                if (category=="Heroes") {
+                    viewEventBinding.labelCategory.text = "Notable Person"
+                }else{
+                    viewEventBinding.labelCategory.text = category
+                }
             }else{
                 viewEventBinding.labelCategory.visibility = GONE
             }
